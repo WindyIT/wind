@@ -1,8 +1,12 @@
 package com.example.windy.wind.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -29,6 +33,9 @@ public class ZhihuDailyItem {
     @Expose
     @SerializedName("title")
     private String title;
+
+    public ZhihuDailyItem() {
+    }
 
     public ZhihuDailyItem(List<String> images, int type, int id, int gaPrefix, String title) {
         this.images = images;

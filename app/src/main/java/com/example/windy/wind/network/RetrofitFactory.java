@@ -18,7 +18,8 @@ public class RetrofitFactory {
     public static RetrofitFactory create(){
         if (retrofitFactory == null){
             synchronized (RetrofitFactory.class){
-                if (retrofitFactory == null) return (retrofitFactory = new RetrofitFactory());
+                if (retrofitFactory == null)
+                    retrofitFactory = new RetrofitFactory();
             }
         }
         return retrofitFactory;

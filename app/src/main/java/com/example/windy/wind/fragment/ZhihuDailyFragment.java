@@ -1,4 +1,4 @@
-package com.example.windy.wind.timeline.zhihuDaily;
+package com.example.windy.wind.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,7 +21,6 @@ import com.example.windy.wind.network.RetrofitFactory;
 import com.example.windy.wind.retrofit.RetrofitService;
 import com.example.windy.wind.value.Api;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Retrofit;
@@ -30,26 +29,24 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by windy on 2017/9/29.
+ * Created by windy on 2017/10/23.
  */
 
-public class ZhihuDailyFragment extends Fragment
-                                implements ZhihuDailyContract.View {
+public class ZhihuDailyFragment extends Fragment{
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    public ZhihuDailyFragment(){}
-
-    public static ZhihuDailyFragment newInstance(){
-        return new ZhihuDailyFragment();
-    }
-
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        //初始化控件
-        initViews(view);
+
+        mRecyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.addItemDecoration(new ItemDividerDecoration(getActivity(), RecyclerView.VERTICAL));
 
         Retrofit retrofit = RetrofitFactory.create().build(Api.ZHIHU_NEWS);
         //获取数据
@@ -70,58 +67,27 @@ public class ZhihuDailyFragment extends Fragment
 
                     @Override
                     public void onNext(ZhihuDailyNews zhihuDailyNews) {
-                         Log.v("Rx", zhihuDailyNews.toString());
-                        showResults(zhihuDailyNews.getStories());
+                        Log.v("Rx", zhihuDailyNews.toString());
+                        UniversalItemAdpter itemAdapter = new UniversalItemAdpter(zhihuDailyNews.getStories());
+                        itemAdapter.setmOnItemCilckListener(new UniversalItemAdpter.OnItemCilckListener() {
+                            @Override
+                            public void onClick(View view, int pos) {
+                                Toast.makeText(getActivity(), "I am the " + pos + " text!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        mRecyclerView.setAdapter(itemAdapter);
                     }
                 });
+
         return view;
     }
 
-    @Override
-    public void setPresenter(ZhihuDailyContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public void initViews(View view) {
-        mRecyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.addItemDecoration(new ItemDividerDecoration(getActivity(), RecyclerView.VERTICAL));
-    }
-
-    @Override
-    public void showError() {
-
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void stopLoading() {
-
-    }
-
-    @Override
-    public void showResults(List<ZhihuDailyItem> list) {
-        UniversalItemAdpter itemAdapter = new UniversalItemAdpter(list);
-        itemAdapter.setmOnItemCilckListener(new UniversalItemAdpter.OnItemCilckListener() {
-            @Override
-            public void onClick(View view, int pos) {
-                Toast.makeText(getActivity(), "I am the " + pos + " text!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        mRecyclerView.setAdapter(itemAdapter);
-    }
-
-    @Override
-    public void showPickDialog() {
-
-    }
+//    public static ZhihuDailyFragment newIntance(List<ZhihuDailyItem> mItems){
+//        ZhihuDailyFragment fragment = new ZhihuDailyFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelableArrayList(ARGUMENT, mItems);
+//        fragment.setArguments(bundle);
+//        return fragment;
+//    }
 }

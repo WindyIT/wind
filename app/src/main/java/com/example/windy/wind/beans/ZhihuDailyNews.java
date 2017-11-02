@@ -3,6 +3,7 @@ package com.example.windy.wind.beans;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public class ZhihuDailyNews {
         return stories;
     }
 
-    public void setStories(List<ZhihuDailyItem> stories) {
+    public void setStories(ArrayList<ZhihuDailyItem> stories) {
         this.stories = stories;
     }
 

@@ -5,6 +5,7 @@ import com.example.windy.wind.BaseView;
 import com.example.windy.wind.beans.ZhihuDailyItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by windy on 2017/9/29.
@@ -19,7 +20,7 @@ public class ZhihuDailyContract {
         // 停止显示正在加载
         void stopLoading();
         // 成功获取到数据后，在界面中显示
-        void showResults(ArrayList<ZhihuDailyItem> list);
+        void showResults(List<ZhihuDailyItem> list);
         // 显示用于加载指定日期的date picker dialog
         void showPickDialog();
     }

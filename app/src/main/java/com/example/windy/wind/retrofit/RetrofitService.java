@@ -12,7 +12,7 @@ import rx.Observable;
 
 public interface RetrofitService {
     interface ZhihuDailyService{
-        @GET("api/3/stories/latest")
+        @GET("latest")
         Observable<ZhihuDailyNews> getLatestInfo();
 
         /**
@@ -20,7 +20,7 @@ public interface RetrofitService {
          * @param date
          * @return
          */
-        @GET("api/3/news/before/{date}")
+        @GET("before/{date}")
         Observable<ZhihuDailyNews> getBeforeInfo(@Path("date") String date);
     }
 }
