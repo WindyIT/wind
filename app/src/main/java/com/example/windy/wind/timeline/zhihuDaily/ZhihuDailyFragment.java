@@ -3,6 +3,7 @@ package com.example.windy.wind.timeline.zhihuDaily;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,10 +14,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.windy.wind.R;
+import com.example.windy.wind.adapter.SlideUpwardScrollListener;
+import com.example.windy.wind.adapter.SuperUpDownAdpter;
 import com.example.windy.wind.adapter.UniversalItemAdpter;
 import com.example.windy.wind.beans.ZhihuDailyItem;
 import com.example.windy.wind.beans.ZhihuDailyNews;
 import com.example.windy.wind.decoration.ItemDividerDecoration;
+import com.example.windy.wind.network.RequestDataRx;
 import com.example.windy.wind.network.RetrofitFactory;
 import com.example.windy.wind.retrofit.RetrofitService;
 import com.example.windy.wind.value.Api;
@@ -25,8 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Retrofit;
+import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -37,12 +44,12 @@ public class ZhihuDailyFragment extends Fragment
                                 implements ZhihuDailyContract.View {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-
-    public ZhihuDailyFragment(){}
+    private SwipeRefreshLayout mRefreshLayout;
 
     public static ZhihuDailyFragment newInstance(){
         return new ZhihuDailyFragment();
     }
+
 
     @Nullable
     @Override
@@ -50,30 +57,46 @@ public class ZhihuDailyFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         //初始化控件
         initViews(view);
+        final RequestDataRx requestDataRx = RequestDataRx.newInstance();
+        getLatestData(requestDataRx, new Subscriber<ZhihuDailyNews>() {
+            @Override
+            public void onCompleted() {
 
-        Retrofit retrofit = RetrofitFactory.create().build(Api.ZHIHU_NEWS);
-        //获取数据
-        retrofit.create(RetrofitService.ZhihuDailyService.class)
-                .getLatestInfo()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ZhihuDailyNews>() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(ZhihuDailyNews zhihuDailyNews) {
+                showResults(zhihuDailyNews.getStories());
+            }
+        });
+
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getLatestData(requestDataRx, new Subscriber<ZhihuDailyNews>() {
                     @Override
                     public void onCompleted() {
-
+                        mRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+
                     }
 
                     @Override
                     public void onNext(ZhihuDailyNews zhihuDailyNews) {
-                         Log.v("Rx", zhihuDailyNews.toString());
                         showResults(zhihuDailyNews.getStories());
                     }
                 });
+            }
+        });
+
         return view;
     }
 
@@ -90,6 +113,8 @@ public class ZhihuDailyFragment extends Fragment
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new ItemDividerDecoration(getActivity(), RecyclerView.VERTICAL));
+
+        mRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.refresh_layout);
     }
 
     @Override
@@ -110,6 +135,8 @@ public class ZhihuDailyFragment extends Fragment
     @Override
     public void showResults(List<ZhihuDailyItem> list) {
         UniversalItemAdpter itemAdapter = new UniversalItemAdpter(list);
+        SuperUpDownAdpter superUpDownAdpter = new SuperUpDownAdpter(itemAdapter);
+
         itemAdapter.setmOnItemCilckListener(new UniversalItemAdpter.OnItemCilckListener() {
             @Override
             public void onClick(View view, int pos) {
@@ -117,11 +144,21 @@ public class ZhihuDailyFragment extends Fragment
             }
         });
 
-        mRecyclerView.setAdapter(itemAdapter);
+        mRecyclerView.setAdapter(superUpDownAdpter);
+        mRecyclerView.addOnScrollListener(new SlideUpwardScrollListener() {
+            @Override
+            public void onLordMore() {
+                Toast.makeText(getContext(), "Slide listen Succ", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     public void showPickDialog() {
 
+    }
+
+    private void getLatestData(RequestDataRx requestDataRx, Observer<ZhihuDailyNews> observer){
+        requestDataRx.getZhiLatestInfo(Api.ZHIHU_NEWS, observer);
     }
 }
