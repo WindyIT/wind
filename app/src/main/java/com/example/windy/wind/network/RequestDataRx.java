@@ -3,6 +3,11 @@ package com.example.windy.wind.network;
 
 import com.example.windy.wind.beans.ZhihuDailyNews;
 import com.example.windy.wind.retrofit.RetrofitService;
+import com.example.windy.wind.utils.DateFormatUtil;
+import com.example.windy.wind.value.Api;
+
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import retrofit2.Retrofit;
 import rx.Observable;
@@ -19,11 +24,10 @@ public class RequestDataRx {
         return new RequestDataRx();
     }
 
-    public void getZhiLatestInfo(String api, Observer<ZhihuDailyNews> observer){
-        Retrofit retrofit = RetrofitFactory.create().build(api);
-
+    public void getZhihuInfo(long date, Observer<ZhihuDailyNews> observer){
+        Retrofit retrofit = RetrofitFactory.create().build(Api.ZHIHU_NEWS);
        retrofit.create(RetrofitService.ZhihuDailyService.class)
-               .getLatestInfo()
+               .getBeforeInfo(DateFormatUtil.formatZhihuDailyDateLongToString(date))
                .subscribeOn(Schedulers.io())
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(observer);

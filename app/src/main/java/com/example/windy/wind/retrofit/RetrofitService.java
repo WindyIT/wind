@@ -12,11 +12,9 @@ import rx.Observable;
 
 public interface RetrofitService {
     interface ZhihuDailyService{
-        @GET("latest")
-        Observable<ZhihuDailyNews> getLatestInfo();
-
         /**
          * date format: 20170912
+         * would get the latest info if the date is the next day
          * @param date
          * @return
          */

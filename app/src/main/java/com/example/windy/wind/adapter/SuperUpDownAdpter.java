@@ -14,7 +14,7 @@ import com.example.windy.wind.R;
 /**
  * Created by windy on 2017/11/8.
  */
-
+//装饰器 可添加底部加载动画 现暂时不采用
 public class SuperUpDownAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private RecyclerView.Adapter mAdapter;
 

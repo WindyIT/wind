@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.windy.wind.R;
 import com.example.windy.wind.beans.ZhihuDailyItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +23,10 @@ import java.util.List;
 public class UniversalItemAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<ZhihuDailyItem> mItemList;
     private Context mContext;
+
+    public UniversalItemAdpter() {
+        mItemList = new ArrayList<>();
+    }
 
     public UniversalItemAdpter(List<ZhihuDailyItem> mItemList) {
         this.mItemList = mItemList;
@@ -88,5 +93,13 @@ public class UniversalItemAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
             pTextView = (TextView)itemView.findViewById(R.id.item_text_view);
             pImgView = (ImageView)itemView.findViewById(R.id.item_view_cover);
         }
+    }
+
+    public void updataData(List<ZhihuDailyItem> itemList) {
+        mItemList.addAll(itemList);
+    }
+
+    public void setItemList(List<ZhihuDailyItem> mItemList) {
+        this.mItemList = mItemList;
     }
 }
