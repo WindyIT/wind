@@ -102,4 +102,8 @@ public class UniversalItemAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void setItemList(List<ZhihuDailyItem> mItemList) {
         this.mItemList = mItemList;
     }
+
+    public List<ZhihuDailyItem> getItemList() {
+        return mItemList;
+    }
 }

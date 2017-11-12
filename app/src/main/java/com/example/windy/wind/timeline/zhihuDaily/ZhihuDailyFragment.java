@@ -1,5 +1,6 @@
 package com.example.windy.wind.timeline.zhihuDaily;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.windy.wind.R;
+import com.example.windy.wind.ZhihuContentActivity;
 import com.example.windy.wind.adapter.SlideUpwardScrollListener;
 import com.example.windy.wind.adapter.UniversalItemAdpter;
 import com.example.windy.wind.beans.ZhihuDailyItem;
@@ -140,7 +142,10 @@ public class ZhihuDailyFragment extends Fragment
         mUniversalItemAdpter.setmOnItemCilckListener(new UniversalItemAdpter.OnItemCilckListener() {
             @Override
             public void onClick(View view, int pos) {
-                Toast.makeText(getActivity(), "I am the " + pos + " text!", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getActivity(), "I am the " + pos + " text!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), ZhihuContentActivity.class);
+                intent.putExtra(ZhihuContentActivity.ZHIHU_NEWS_ID, mUniversalItemAdpter.getItemList().get(pos).getId());
+                startActivity(intent);
             }
         });
     }

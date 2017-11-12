@@ -1,5 +1,7 @@
 package com.example.windy.wind.retrofit;
 
+import com.example.windy.wind.beans.ZhihuDailyContent;
+import com.example.windy.wind.beans.ZhihuDailyItem;
 import com.example.windy.wind.beans.ZhihuDailyNews;
 
 import retrofit2.http.GET;
@@ -20,5 +22,8 @@ public interface RetrofitService {
          */
         @GET("before/{date}")
         Observable<ZhihuDailyNews> getBeforeInfo(@Path("date") String date);
+
+        @GET("{id}")
+        Observable<ZhihuDailyContent> getNewsContent(@Path("id") int id);
     }
 }
