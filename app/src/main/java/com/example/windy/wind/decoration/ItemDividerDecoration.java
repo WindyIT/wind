@@ -20,7 +20,6 @@ public class ItemDividerDecoration extends RecyclerView.ItemDecoration {
     private static final int HORIZONTAL_LIST = RecyclerView.HORIZONTAL;
 
     private Drawable mDivider;
-
     private int mOrientation;
 
     public ItemDividerDecoration(Context context, int orientation) {

@@ -4,18 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.windy.wind.beans.ZhihuDailyContent;
+import com.example.windy.wind.customtabs.CustomTabsHelper;
 import com.example.windy.wind.network.RequestDataRx;
 
 import rx.Observer;
@@ -29,14 +31,16 @@ public class ZhihuContentActivity extends AppCompatActivity {
     private WebView mWebView;
     private ImageView mImgView;
     private CollapsingToolbarLayout mToolbarLayout;
-    private Toolbar toolbar;
-    private NestedScrollView mScrollView;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_zhcontent);
         initView();
+        setCollapsingToolbarLayoutTitle("test");
         Intent intent = getIntent();
         int id = intent.getIntExtra(ZHIHU_NEWS_ID, 0);
 
@@ -61,7 +65,20 @@ public class ZhihuContentActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initView(){
+     //   getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       // getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+
         mWebView = (WebView) findViewById(R.id.web_view);
         mWebView.setScrollbarFadingEnabled(true);
         mWebView.getSettings().setJavaScriptEnabled(true);
@@ -72,13 +89,14 @@ public class ZhihuContentActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-               view.loadUrl(url);
+               CustomTabsHelper.openUrl(getApplicationContext(), url);
                 return true;
             }
         });
 
 
         mImgView = (ImageView)findViewById(R.id.img_view_content);
+        mToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapse_layout);
     }
 
     private void showContent(ZhihuDailyContent content){
@@ -119,6 +137,13 @@ public class ZhihuContentActivity extends AppCompatActivity {
         }else {
             mImgView.setImageResource(R.drawable.ic_nav_header);
         }
+    }
 
+    private void setCollapsingToolbarLayoutTitle(String title){
+        mToolbarLayout.setTitle("Test");
+        mToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+        mToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+        mToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBarPlus1);
+        mToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBarPlus1);
     }
 }
