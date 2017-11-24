@@ -1,6 +1,8 @@
 package com.example.windy.wind.network;
 
 
+import com.example.windy.wind.beans.MrywContent;
+import com.example.windy.wind.beans.MrywData;
 import com.example.windy.wind.beans.ZhihuDailyContent;
 import com.example.windy.wind.beans.ZhihuDailyNews;
 import com.example.windy.wind.retrofit.RetrofitService;

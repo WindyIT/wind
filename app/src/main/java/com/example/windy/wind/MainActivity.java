@@ -17,7 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.windy.wind.adapter.ViewPagerAdapter;
-import com.example.windy.wind.fragment.MeiRiYiWenFragment;
+import com.example.windy.wind.timeline.meiriYiwen.MeiRiYiWenFragment;
 import com.example.windy.wind.timeline.zhihuDaily.ZhihuDailyFragment;
 
 import java.util.ArrayList;

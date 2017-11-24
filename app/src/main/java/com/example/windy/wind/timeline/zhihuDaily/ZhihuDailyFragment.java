@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,10 @@ public class ZhihuDailyFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         //初始化控件
         initViews(view);
+
+        //first loading indicator
+       //firstLoadingIndicator();
+
         //init
         mRequestDataRx = RequestDataRx.newInstance();
         mUniversalItemAdpter = new UniversalItemAdpter();
@@ -79,20 +84,6 @@ public class ZhihuDailyFragment extends Fragment
         });
 
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (isFristLoad){
-            isFristLoad = false;
-            mRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mRefreshLayout.setRefreshing(true);
-                }
-            });
-        }
     }
 
     @Override
@@ -145,6 +136,7 @@ public class ZhihuDailyFragment extends Fragment
                // Toast.makeText(getActivity(), "I am the " + pos + " text!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), ZhihuContentActivity.class);
                 intent.putExtra(ZhihuContentActivity.ZHIHU_NEWS_ID, mUniversalItemAdpter.getItemList().get(pos).getId());
+                intent.putExtra(ZhihuContentActivity.ZHIHU_NEWS_TITLE,  mUniversalItemAdpter.getItemList().get(pos).getTitle());
                 startActivity(intent);
             }
         });
@@ -182,6 +174,7 @@ public class ZhihuDailyFragment extends Fragment
             public void onCompleted() {
                 mUniversalItemAdpter.notifyDataSetChanged();
                 mRefreshLayout.setRefreshing(false);
+               //Log.v("Refresh", "Stop Refresing!!!");
             }
 
             @Override
@@ -192,5 +185,18 @@ public class ZhihuDailyFragment extends Fragment
                 mUniversalItemAdpter.setItemList(zhihuDailyNews.getStories());
             }
         };
+    }
+
+    private void firstLoadingIndicator(){
+        //first loading indicator
+        if (isFristLoad){
+            isFristLoad = false;
+            mRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mRefreshLayout.setRefreshing(true);
+                }
+            });
+        }
     }
 }

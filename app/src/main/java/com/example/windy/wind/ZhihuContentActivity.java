@@ -28,6 +28,8 @@ import rx.Observer;
 
 public class ZhihuContentActivity extends AppCompatActivity {
     public static final String ZHIHU_NEWS_ID  = "ID";
+    public static final String ZHIHU_NEWS_TITLE = "TITLE";
+
     private WebView mWebView;
     private ImageView mImgView;
     private CollapsingToolbarLayout mToolbarLayout;
@@ -40,9 +42,12 @@ public class ZhihuContentActivity extends AppCompatActivity {
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_zhcontent);
         initView();
-        setCollapsingToolbarLayoutTitle("test");
+
+        //get data from the intent
         Intent intent = getIntent();
         int id = intent.getIntExtra(ZHIHU_NEWS_ID, 0);
+        String title = intent.getStringExtra(ZHIHU_NEWS_TITLE);
+        setCollapsingToolbarLayoutTitle(title);
 
         RequestDataRx requestDataRx = RequestDataRx.newInstance();
         requestDataRx.getZhihuContent(id, new Observer<ZhihuDailyContent>() {
@@ -86,6 +91,9 @@ public class ZhihuContentActivity extends AppCompatActivity {
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.getSettings().setAppCacheEnabled(false);
+        mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+       // mWebView.getSettings().setUseWideViewPort(true);
+       // mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -104,7 +112,8 @@ public class ZhihuContentActivity extends AppCompatActivity {
             String result = content.getBody();
             result = result.replace("<div class=\"img-place-holder\">", "");
             result = result.replace("<div class=\"headline\">", "");
-
+           // result = result.replace("<img", "<img height=\"auto\" width=\"100%\"");
+            //知乎日报api-4版本 .content-image 设置图片宽度自适应
             String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/zhihu_daily.css\" type=\"text/css\">";
 
             String theme = "<body className=\"\" onload=\"onLoaded()\">";
@@ -113,6 +122,7 @@ public class ZhihuContentActivity extends AppCompatActivity {
                     + "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">\n"
                     + "<head>\n"
                     + "\t<meta charset=\"utf-8\" />"
+                  //  + "\t<meta name=\"viewport\" content=\"width=device-width\">"
                     + css
                     + "\n</head>\n"
                     + theme
@@ -140,7 +150,7 @@ public class ZhihuContentActivity extends AppCompatActivity {
     }
 
     private void setCollapsingToolbarLayoutTitle(String title){
-        mToolbarLayout.setTitle("Test");
+        mToolbarLayout.setTitle(title);
         mToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
         mToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
         mToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBarPlus1);

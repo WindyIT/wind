@@ -1,11 +1,13 @@
 package com.example.windy.wind.retrofit;
 
+import com.example.windy.wind.beans.MrywContent;
 import com.example.windy.wind.beans.ZhihuDailyContent;
 import com.example.windy.wind.beans.ZhihuDailyItem;
 import com.example.windy.wind.beans.ZhihuDailyNews;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -25,5 +27,15 @@ public interface RetrofitService {
 
         @GET("{id}")
         Observable<ZhihuDailyContent> getNewsContent(@Path("id") int id);
+    }
+
+    interface MrywService{
+        /**
+         * date format: 20171115
+         * @param date
+         * @return
+         */
+        @GET("article/day")
+        Observable<MrywContent> getArticle(@Query("date") String date);
     }
 }
