@@ -2,7 +2,7 @@ package com.example.windy.wind.network;
 
 import android.util.Log;
 
-import com.example.windy.wind.beans.MrywData;
+import com.example.windy.wind.data.beans.MrywData;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;

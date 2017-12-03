@@ -10,15 +10,13 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import com.example.windy.wind.R;
-import com.example.windy.wind.beans.MrywContent;
-import com.example.windy.wind.beans.MrywData;
-import com.example.windy.wind.beans.MrywDate;
+import com.example.windy.wind.data.beans.MrywContent;
+import com.example.windy.wind.data.beans.MrywData;
+import com.example.windy.wind.data.beans.MrywDate;
 import com.example.windy.wind.customtabs.CustomTabsHelper;
 import com.example.windy.wind.network.NoOkRequest;
-import com.example.windy.wind.network.RequestDataRx;
 import com.example.windy.wind.value.Api;
 
 import java.util.Calendar;

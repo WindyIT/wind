@@ -1,4 +1,4 @@
-package com.example.windy.wind.beans;
+package com.example.windy.wind.data.beans;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

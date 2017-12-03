@@ -1,5 +1,6 @@
 package com.example.windy.wind;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,15 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.example.windy.wind.beans.ZhihuDailyContent;
+import com.example.windy.wind.data.beans.ZhihuDailyContent;
 import com.example.windy.wind.customtabs.CustomTabsHelper;
 import com.example.windy.wind.network.RequestDataRx;
 
@@ -155,5 +154,12 @@ public class ZhihuContentActivity extends AppCompatActivity {
         mToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
         mToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBarPlus1);
         mToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBarPlus1);
+    }
+
+    public static void actionStart(Context context, int id, String title){
+        Intent intent = new Intent(context, ZhihuContentActivity.class);
+        intent.putExtra(ZHIHU_NEWS_ID, id);
+        intent.putExtra(ZHIHU_NEWS_TITLE, title);
+        context.startActivity(intent);
     }
 }

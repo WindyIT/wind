@@ -1,21 +1,16 @@
 package com.example.windy.wind.network;
 
 
-import com.example.windy.wind.beans.MrywContent;
-import com.example.windy.wind.beans.MrywData;
-import com.example.windy.wind.beans.ZhihuDailyContent;
-import com.example.windy.wind.beans.ZhihuDailyNews;
+import com.example.windy.wind.data.beans.MrywContent;
+import com.example.windy.wind.data.beans.MrywData;
+import com.example.windy.wind.data.beans.ZhihuDailyContent;
+import com.example.windy.wind.data.beans.ZhihuDailyNews;
 import com.example.windy.wind.retrofit.RetrofitService;
 import com.example.windy.wind.utils.DateFormatUtil;
 import com.example.windy.wind.value.Api;
 
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import retrofit2.Retrofit;
-import rx.Observable;
 import rx.Observer;
-import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 

@@ -17,8 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.windy.wind.adapter.ViewPagerAdapter;
+import com.example.windy.wind.data.local.ZhihuDailyNewsLocalDs;
+import com.example.windy.wind.data.remote.ZhihuDailyNewsRemoteDs;
+import com.example.windy.wind.data.repository.ZhihuDailyNewsRepository;
 import com.example.windy.wind.timeline.meiriYiwen.MeiRiYiWenFragment;
 import com.example.windy.wind.timeline.zhihuDaily.ZhihuDailyFragment;
+import com.example.windy.wind.timeline.zhihuDaily.ZhihuDailyPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +52,9 @@ public class MainActivity extends AppCompatActivity
         mFragments = new ArrayList<>();
         mFragments.add(mZhihuDailyFragment);
         mFragments.add(mMeiRiYiWenFragment);
+
+        new ZhihuDailyPresenter(mZhihuDailyFragment,
+                ZhihuDailyNewsRepository.getInstance(ZhihuDailyNewsRemoteDs.getInstance(), ZhihuDailyNewsLocalDs.getInstance(this)));
 
         initView();
     }

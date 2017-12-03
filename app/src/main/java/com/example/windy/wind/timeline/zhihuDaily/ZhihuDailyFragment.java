@@ -8,7 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.telecom.Call;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +18,8 @@ import com.example.windy.wind.R;
 import com.example.windy.wind.ZhihuContentActivity;
 import com.example.windy.wind.adapter.SlideUpwardScrollListener;
 import com.example.windy.wind.adapter.UniversalItemAdpter;
-import com.example.windy.wind.beans.ZhihuDailyItem;
-import com.example.windy.wind.beans.ZhihuDailyNews;
+import com.example.windy.wind.data.beans.ZhihuDailyItem;
+import com.example.windy.wind.data.beans.ZhihuDailyNews;
 import com.example.windy.wind.decoration.ItemDividerDecoration;
 import com.example.windy.wind.network.RequestDataRx;
 
@@ -44,7 +44,13 @@ public class ZhihuDailyFragment extends Fragment
 
     private boolean isFristLoad = true;
 
+    private ZhihuDailyContract.Presenter mPresenter;
+
     private int mYear, mMonth, mDay;
+
+    public static ZhihuDailyFragment newInstance(){
+        return new ZhihuDailyFragment();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,33 +68,33 @@ public class ZhihuDailyFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         //初始化控件
         initViews(view);
-
-        //first loading indicator
-       //firstLoadingIndicator();
-
-        //init
-        mRequestDataRx = RequestDataRx.newInstance();
-        mUniversalItemAdpter = new UniversalItemAdpter();
-        mRecyclerView.setAdapter(mUniversalItemAdpter);
+        //item响应事件
         setOnClick();
-        setOnScrollUpward();
-        //
-        Calendar c = Calendar.getInstance();
-        mRequestDataRx.getZhihuInfo(c.getTimeInMillis(), getDefaultSubscriber());
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Calendar c = Calendar.getInstance();
-               mRequestDataRx.getZhihuInfo(c.getTimeInMillis(), getDefaultSubscriber());
-            }
-        });
+        //上拉/下拉加载更多事件
+        setOnScroll();
 
         return view;
     }
 
     @Override
-    public void setPresenter(ZhihuDailyContract.Presenter presenter) {
+    public void onResume() {
+        super.onResume();
+        Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("GMT+08"));
+        c.set(mYear, mMonth, mDay);
+        
+        if (isFristLoad){
+            isFristLoad = false;
+            mPresenter.loadPosts(c.getTimeInMillis(), false);
+        }else {
+            mPresenter.loadPosts(c.getTimeInMillis(), false);
+        }
+    }
 
+    @Override
+    public void setPresenter(ZhihuDailyContract.Presenter presenter) {
+        if (presenter != null)
+            mPresenter = presenter;
     }
 
     @Override
@@ -101,102 +107,61 @@ public class ZhihuDailyFragment extends Fragment
         mRecyclerView.addItemDecoration(new ItemDividerDecoration(getActivity(), RecyclerView.VERTICAL));
 
         mRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.refresh_layout);
+
+        mUniversalItemAdpter = new UniversalItemAdpter();
+        mRecyclerView.setAdapter(mUniversalItemAdpter);
     }
 
     @Override
     public void showError() {
-
+        Toast.makeText(getContext(), "数据加载出错", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void showLoading() {
-
+    public void showLoadingIndicator(final boolean flag) {
+            mRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mRefreshLayout.setRefreshing(flag);
+                }
+            });
     }
 
     @Override
-    public void stopLoading() {
-
+    public boolean isActive() {
+        return isAdded();
     }
 
     @Override
     public void showResults(List<ZhihuDailyItem> list) {
-
-
-    }
-
-    @Override
-    public void showPickDialog() {
-
+        mUniversalItemAdpter.updataData(list);
     }
 
     private void setOnClick(){
         mUniversalItemAdpter.setmOnItemCilckListener(new UniversalItemAdpter.OnItemCilckListener() {
             @Override
             public void onClick(View view, int pos) {
-               // Toast.makeText(getActivity(), "I am the " + pos + " text!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), ZhihuContentActivity.class);
-                intent.putExtra(ZhihuContentActivity.ZHIHU_NEWS_ID, mUniversalItemAdpter.getItemList().get(pos).getId());
-                intent.putExtra(ZhihuContentActivity.ZHIHU_NEWS_TITLE,  mUniversalItemAdpter.getItemList().get(pos).getTitle());
-                startActivity(intent);
+               ZhihuContentActivity.actionStart(getContext(), mUniversalItemAdpter.getItemList().get(pos).getId(), mUniversalItemAdpter.getItemList().get(pos).getTitle());
             }
         });
     }
 
-    private void setOnScrollUpward(){
+    private void setOnScroll(){
         mRecyclerView.addOnScrollListener(new SlideUpwardScrollListener() {
             @Override
             public void onLordMore() {
-                --mDay;
                 Calendar c = Calendar.getInstance();
-                c.set(mYear, mMonth, mDay);
-                mRequestDataRx.getZhihuInfo(c.getTimeInMillis(),
-                        new Subscriber<ZhihuDailyNews>() {
-                            @Override
-                            public void onCompleted() {
-                                mUniversalItemAdpter.notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {}
-
-                            @Override
-                            public void onNext(ZhihuDailyNews zhihuDailyNews) {
-                                mUniversalItemAdpter.updataData(zhihuDailyNews.getStories());
-                            }
-                        });
+                c.set(mYear, mMonth, --mDay);
+                mPresenter.loadPosts(c.getTimeInMillis(), false);
               }
         });
-    }
 
-    private Subscriber<ZhihuDailyNews> getDefaultSubscriber(){
-        return new Subscriber<ZhihuDailyNews>() {
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onCompleted() {
-                mUniversalItemAdpter.notifyDataSetChanged();
-                mRefreshLayout.setRefreshing(false);
-               //Log.v("Refresh", "Stop Refresing!!!");
+            public void onRefresh() {
+                Calendar c = Calendar.getInstance();
+                mPresenter.loadPosts(c.getTimeInMillis(), false);
             }
-
-            @Override
-            public void onError(Throwable e) {}
-
-            @Override
-            public void onNext(ZhihuDailyNews zhihuDailyNews) {
-                mUniversalItemAdpter.setItemList(zhihuDailyNews.getStories());
-            }
-        };
-    }
-
-    private void firstLoadingIndicator(){
-        //first loading indicator
-        if (isFristLoad){
-            isFristLoad = false;
-            mRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mRefreshLayout.setRefreshing(true);
-                }
-            });
-        }
+        });
     }
 }

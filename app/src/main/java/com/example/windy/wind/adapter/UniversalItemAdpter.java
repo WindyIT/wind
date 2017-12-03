@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.windy.wind.R;
-import com.example.windy.wind.beans.ZhihuDailyItem;
+import com.example.windy.wind.data.beans.ZhihuDailyItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,12 +96,11 @@ public class UniversalItemAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void updataData(List<ZhihuDailyItem> itemList) {
+        mItemList.clear();
         mItemList.addAll(itemList);
+        notifyDataSetChanged();
     }
 
-    public void setItemList(List<ZhihuDailyItem> mItemList) {
-        this.mItemList = mItemList;
-    }
 
     public List<ZhihuDailyItem> getItemList() {
         return mItemList;

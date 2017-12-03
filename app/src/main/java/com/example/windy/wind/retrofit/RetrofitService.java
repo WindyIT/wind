@@ -1,9 +1,9 @@
 package com.example.windy.wind.retrofit;
 
-import com.example.windy.wind.beans.MrywContent;
-import com.example.windy.wind.beans.ZhihuDailyContent;
-import com.example.windy.wind.beans.ZhihuDailyItem;
-import com.example.windy.wind.beans.ZhihuDailyNews;
+import com.example.windy.wind.data.beans.MrywContent;
+import com.example.windy.wind.data.beans.ZhihuDailyContent;
+import com.example.windy.wind.data.beans.ZhihuDailyItem;
+import com.example.windy.wind.data.beans.ZhihuDailyNews;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
