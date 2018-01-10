@@ -32,8 +32,6 @@ public class ZhihuDailyNewsRepository implements ZhihuDailyNewsDataSource{
 
     private Map<Integer, ZhihuDailyItem> mNewsCache;
 
-    private AppDatabase mAppDatabase;
-
     public ZhihuDailyNewsRepository(@NonNull ZhihuDailyNewsRemoteDs mRemoteDs, @NonNull ZhihuDailyNewsLocalDs mLocalDs) {
         this.mRemoteDs = mRemoteDs;
         this.mLocalDs = mLocalDs;

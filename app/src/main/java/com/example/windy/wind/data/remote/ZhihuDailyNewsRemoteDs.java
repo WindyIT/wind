@@ -67,6 +67,6 @@ public class ZhihuDailyNewsRemoteDs implements ZhihuDailyNewsDataSource {
 
     @Override
     public void saveAll(List<ZhihuDailyItem> items) {
-
+        //not required here
     }
 }

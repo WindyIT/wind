@@ -7,18 +7,17 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.windy.wind.R;
-import com.example.windy.wind.ZhihuContentActivity;
 import com.example.windy.wind.adapter.SlideUpwardScrollListener;
 import com.example.windy.wind.adapter.UniversalItemAdpter;
 import com.example.windy.wind.data.beans.ZhihuDailyItem;
 import com.example.windy.wind.decoration.ItemDividerDecoration;
+import com.example.windy.wind.timeline.content.ZhihuContentActivity;
 
 import java.util.Calendar;
 import java.util.List;

@@ -3,6 +3,7 @@ package com.example.windy.wind.database.cache;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.windy.wind.data.beans.ZhihuDailyContent;
 import com.example.windy.wind.data.beans.ZhihuDailyItem;
 import com.example.windy.wind.database.AppDatabase;
 import com.example.windy.wind.database.DatabaseCreator;
@@ -14,7 +15,6 @@ import javax.annotation.Nullable;
 /**
  * Created by windy on 2018/1/10.
  */
-
 public class CacheManager implements ClearCacheInterface{
     @Nullable
     private AppDatabase mDb;
@@ -37,8 +37,9 @@ public class CacheManager implements ClearCacheInterface{
 
     @Override
     public void clearCache(final ClearCacheCallback callback) {
-        if (mDb == null) {
-            mDb = DatabaseCreator.getInstance().getDatabase();
+        if (mDb == null) mDb = DatabaseCreator.getInstance().getDatabase();
+
+        if (!hasCleared){
             new AsyncTask<Void, Void, Integer>() {
                 @Override
                 protected Integer doInBackground(Void... voids) {
@@ -47,7 +48,12 @@ public class CacheManager implements ClearCacheInterface{
                         List<ZhihuDailyItem> items = mDb.zhihuDailyItemDao().queryAll();
 
                         for (ZhihuDailyItem item : items) {
+                            //删除列表元素缓存
                             cnt += mDb.zhihuDailyItemDao().delete(item);
+
+                            //删除详细内容缓存
+                            ZhihuDailyContent content = mDb.zhihuDailyContentDao().query(item.getId());
+                            mDb.zhihuDailyContentDao().delete(content);
                         }
                         hasCleared = true;
                     }
@@ -65,7 +71,7 @@ public class CacheManager implements ClearCacheInterface{
                 }
             }.execute();
         } else {
-            callback.onOcurrError();
+            callback.onNotCacheExist();
         }
     }
 }

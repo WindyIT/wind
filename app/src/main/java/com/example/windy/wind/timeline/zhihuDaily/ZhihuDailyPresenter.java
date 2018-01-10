@@ -20,7 +20,7 @@ public class ZhihuDailyPresenter implements ZhihuDailyContract.Presenter {
 
     public ZhihuDailyPresenter(@NonNull ZhihuDailyContract.View view, @NonNull ZhihuDailyNewsRepository repository){
         mView = view;
-        mView.setPresenter(this);
+        mView.setPresenter(this); //此处将实例化的Presenter传递给View
         mRepository = repository;
     }
 

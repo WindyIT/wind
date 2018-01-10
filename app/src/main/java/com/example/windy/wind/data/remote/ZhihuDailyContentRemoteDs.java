@@ -19,6 +19,16 @@ import rx.schedulers.Schedulers;
  */
 
 public class ZhihuDailyContentRemoteDs implements ZhihuDailyContentDataSource {
+    private static ZhihuDailyContentRemoteDs INSTANCE = null;
+
+    private ZhihuDailyContentRemoteDs(){}
+
+    public static ZhihuDailyContentRemoteDs getInstance(){
+        if (INSTANCE == null){
+            INSTANCE = new ZhihuDailyContentRemoteDs();
+        }
+        return INSTANCE;
+    }
     @Override
     public void loadContent(int itemId, @NonNull final LoadZhihuDailyContentCallback callback) {
         Retrofit retrofit = RetrofitFactory.create().build(Api.ZHIHU_NEWS);
@@ -29,7 +39,7 @@ public class ZhihuDailyContentRemoteDs implements ZhihuDailyContentDataSource {
                 .subscribe(new Subscriber<ZhihuDailyContent>() {
                     @Override
                     public void onCompleted() {
-                        Log.v("Mvp", "GetRemoteContentDataSuccessfully");
+                        Log.v("Remote", "GetRemoteContentDataSuccessfully");
                     }
 
                     @Override
@@ -42,5 +52,10 @@ public class ZhihuDailyContentRemoteDs implements ZhihuDailyContentDataSource {
                         callback.onContentLoaded(content);
                     }
                 });
+    }
+
+    @Override
+    public void saveAll(ZhihuDailyContent content) {
+        //not required here
     }
 }

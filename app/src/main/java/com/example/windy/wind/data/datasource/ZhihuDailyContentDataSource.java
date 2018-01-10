@@ -18,4 +18,6 @@ public interface ZhihuDailyContentDataSource {
     }
 
     void loadContent(int itemId, @NonNull LoadZhihuDailyContentCallback callback);
+
+    void saveAll(ZhihuDailyContent content);
 }
