@@ -1,5 +1,13 @@
 package com.example.windy.wind.data.beans;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverter;
+import android.arch.persistence.room.TypeConverters;
+
+import com.example.windy.wind.database.converter.StringTypeConverter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,48 +16,61 @@ import java.util.List;
 /**
  * Created by windy on 2017/11/11.
  */
-
+@Entity(tableName = "zhihu_daily_content")
+@TypeConverters({StringTypeConverter.class})
 public class ZhihuDailyContent {
+    @ColumnInfo(name = "body")
     @Expose
     @SerializedName("body")
     private String body;
 
+    @ColumnInfo(name = "image_source")
     @Expose
     @SerializedName("image_source")
     private String image_source;
 
+    @ColumnInfo(name = "title")
     @Expose
     @SerializedName("title")
     private String title;
 
+    @ColumnInfo(name = "image")
     @Expose
     @SerializedName("image")
     private String image;
 
+    @ColumnInfo(name = "share_url")
     @Expose
     @SerializedName("share_url")
     private String share_url;
 
+    @Ignore
     @Expose
     @SerializedName("js")
     private List<String> js;
 
+    @Ignore
     @Expose
     @SerializedName("ga_prefix")
     private String ga_prefix;
 
+    @ColumnInfo(name = "images")
     @Expose
     @SerializedName("images")
     private List<String> images;
 
+    @ColumnInfo(name = "type")
     @Expose
     @SerializedName("type")
     private int type;
 
+    @PrimaryKey
+    @ColumnInfo(name = "id")
     @Expose
     @SerializedName("id")
     private int id;
 
+    @Ignore
     @Expose
     @SerializedName("css")
     private List<String> css;

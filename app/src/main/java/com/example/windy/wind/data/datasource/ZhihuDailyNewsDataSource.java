@@ -30,7 +30,9 @@ public interface ZhihuDailyNewsDataSource {
 
     }
 
-    void loadNews(long date, @NonNull LoadZhihuDailyNewsCallback callback);
+    void loadNews(long date, boolean isLoadMore, @NonNull LoadZhihuDailyNewsCallback callback);
 
     void loadItemContent(int id, @NonNull LoadZhihuDailyItemCallback callback);
+
+    void saveAll(List<ZhihuDailyItem> items);
 }

@@ -1,13 +1,9 @@
 package com.example.windy.wind.timeline.zhihuDaily;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 
 import com.example.windy.wind.data.beans.ZhihuDailyItem;
 import com.example.windy.wind.data.datasource.ZhihuDailyNewsDataSource;
-import com.example.windy.wind.data.local.ZhihuDailyNewsLocalDs;
-import com.example.windy.wind.data.remote.ZhihuDailyNewsRemoteDs;
 import com.example.windy.wind.data.repository.ZhihuDailyNewsRepository;
 
 import java.util.List;
@@ -34,9 +30,9 @@ public class ZhihuDailyPresenter implements ZhihuDailyContract.Presenter {
     }
 
     @Override
-    public void loadPosts(long date, boolean clearing) {
+    public void loadPosts(long date, boolean isLoadMore) {
         mView.showLoadingIndicator(true);
-        mRepository.loadNews(date, new ZhihuDailyNewsDataSource.LoadZhihuDailyNewsCallback() {
+        mRepository.loadNews(date, isLoadMore, new ZhihuDailyNewsDataSource.LoadZhihuDailyNewsCallback() {
             @Override
             public void onNewsLoaded(@NonNull List<ZhihuDailyItem> list) {
                 if (mView.isActive()) {
@@ -47,6 +43,7 @@ public class ZhihuDailyPresenter implements ZhihuDailyContract.Presenter {
 
             @Override
             public void onDataNotAvailable() {
+                mView.showLoadingIndicator(false);
                 mView.showError();
             }
         });

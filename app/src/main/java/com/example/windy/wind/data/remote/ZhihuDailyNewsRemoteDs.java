@@ -4,12 +4,15 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.windy.wind.data.beans.ZhihuDailyContent;
+import com.example.windy.wind.data.beans.ZhihuDailyItem;
 import com.example.windy.wind.data.beans.ZhihuDailyNews;
 import com.example.windy.wind.data.datasource.ZhihuDailyNewsDataSource;
 import com.example.windy.wind.network.RetrofitFactory;
 import com.example.windy.wind.retrofit.RetrofitService;
 import com.example.windy.wind.utils.DateFormatUtil;
 import com.example.windy.wind.value.Api;
+
+import java.util.List;
 
 import retrofit2.Retrofit;
 import rx.Subscriber;
@@ -33,7 +36,7 @@ public class ZhihuDailyNewsRemoteDs implements ZhihuDailyNewsDataSource {
     }
 
     @Override
-    public void loadNews(long date, @NonNull final LoadZhihuDailyNewsCallback callback) {
+    public void loadNews(long date, boolean isLoadMore, @NonNull final LoadZhihuDailyNewsCallback callback) {
         Retrofit retrofit = RetrofitFactory.create().build(Api.ZHIHU_NEWS);
         retrofit.create(RetrofitService.ZhihuDailyService.class)
                 .getBeforeInfo(DateFormatUtil.formatZhihuDailyDateLongToString(date))
@@ -60,5 +63,10 @@ public class ZhihuDailyNewsRemoteDs implements ZhihuDailyNewsDataSource {
     @Override
     public void loadItemContent(int id, @NonNull final LoadZhihuDailyItemCallback callback) {
         // not required for remote data
+    }
+
+    @Override
+    public void saveAll(List<ZhihuDailyItem> items) {
+
     }
 }

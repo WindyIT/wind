@@ -15,11 +15,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.windy.wind.adapter.ViewPagerAdapter;
 import com.example.windy.wind.data.local.ZhihuDailyNewsLocalDs;
 import com.example.windy.wind.data.remote.ZhihuDailyNewsRemoteDs;
 import com.example.windy.wind.data.repository.ZhihuDailyNewsRepository;
+import com.example.windy.wind.database.cache.CacheManager;
+import com.example.windy.wind.database.cache.ClearCacheInterface;
 import com.example.windy.wind.timeline.meiriYiwen.MeiRiYiWenFragment;
 import com.example.windy.wind.timeline.zhihuDaily.ZhihuDailyFragment;
 import com.example.windy.wind.timeline.zhihuDaily.ZhihuDailyPresenter;
@@ -42,10 +45,12 @@ public class MainActivity extends AppCompatActivity
     private ZhihuDailyFragment mZhihuDailyFragment;
     private MeiRiYiWenFragment mMeiRiYiWenFragment;
 
+    private CacheManager cacheManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         mZhihuDailyFragment = new ZhihuDailyFragment();
         mMeiRiYiWenFragment = new MeiRiYiWenFragment();
@@ -55,6 +60,8 @@ public class MainActivity extends AppCompatActivity
 
         new ZhihuDailyPresenter(mZhihuDailyFragment,
                 ZhihuDailyNewsRepository.getInstance(ZhihuDailyNewsRemoteDs.getInstance(), ZhihuDailyNewsLocalDs.getInstance(this)));
+
+        cacheManager = CacheManager.getInstance();
 
         initView();
     }
@@ -104,7 +111,22 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_nopic_mode) {
 
         } else if (id == R.id.nav_clear_cache) {
+            cacheManager.clearCache(new ClearCacheInterface.ClearCacheCallback() {
+                @Override
+                public void onNotCacheExist() {
+                    Toast.makeText(getApplicationContext(), "缓存已清空", Toast.LENGTH_SHORT).show();
+                }
 
+                @Override
+                public void onOcurrError() {
+                    Toast.makeText(getApplicationContext(), "清空缓存出现错误", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onClearSuccessfullt(int deletedItemsCnt) {
+                    Toast.makeText(getApplicationContext(), "清除" + deletedItemsCnt + "条缓存", Toast.LENGTH_SHORT).show();
+                }
+            });
         } else if (id == R.id.nav_collect) {
 
         } else if (id == R.id.nav_history) {

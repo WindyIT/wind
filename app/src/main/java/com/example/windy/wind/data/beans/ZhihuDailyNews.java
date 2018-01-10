@@ -1,5 +1,8 @@
 package com.example.windy.wind.data.beans;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +12,6 @@ import java.util.List;
 /**
  * Created by windy on 2017/9/29.
  */
-
 public class ZhihuDailyNews {
     @Expose
     @SerializedName("date")

@@ -3,15 +3,18 @@ package com.example.windy.wind.data.repository;
 import android.support.annotation.NonNull;
 
 import com.example.windy.wind.data.beans.ZhihuDailyItem;
-import com.example.windy.wind.data.beans.ZhihuDailyNews;
 import com.example.windy.wind.data.datasource.ZhihuDailyNewsDataSource;
 import com.example.windy.wind.data.local.ZhihuDailyNewsLocalDs;
 import com.example.windy.wind.data.remote.ZhihuDailyNewsRemoteDs;
+import com.example.windy.wind.database.AppDatabase;
+import com.example.windy.wind.database.DatabaseCreator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Created by windy on 2017/11/30.
@@ -28,6 +31,8 @@ public class ZhihuDailyNewsRepository implements ZhihuDailyNewsDataSource{
     private final ZhihuDailyNewsLocalDs mLocalDs;
 
     private Map<Integer, ZhihuDailyItem> mNewsCache;
+
+    private AppDatabase mAppDatabase;
 
     public ZhihuDailyNewsRepository(@NonNull ZhihuDailyNewsRemoteDs mRemoteDs, @NonNull ZhihuDailyNewsLocalDs mLocalDs) {
         this.mRemoteDs = mRemoteDs;
@@ -46,32 +51,33 @@ public class ZhihuDailyNewsRepository implements ZhihuDailyNewsDataSource{
 
     //repository 实现 缓存/远程/本地 分支选择，读取逻辑在presenter实现
     @Override
-    public void loadNews(final long date, @NonNull final LoadZhihuDailyNewsCallback callback) {
-        //优先从高速缓存读取
-//        if (mNewsCache != null){
-//            callback.onNewsLoaded(new ArrayList<ZhihuDailyItem>(mNewsCache.values()));
-//            return;
-//        }
+    public void loadNews(final long date, final boolean isLoadMore, @NonNull final LoadZhihuDailyNewsCallback callback) {
+       // 优先从高速缓存读取
+        if (mNewsCache != null && !isLoadMore){
+            callback.onNewsLoaded(new ArrayList<>(mNewsCache.values()));
+            return;
+        }
 
         //从网络请求数据，并保存到数据库
-        mRemoteDs.loadNews(date, new LoadZhihuDailyNewsCallback() {
+        mRemoteDs.loadNews(date, isLoadMore, new LoadZhihuDailyNewsCallback() {
             @Override
             public void onNewsLoaded(@NonNull List<ZhihuDailyItem> list) {
                 //save into the cache
-                refreshCache(false, list);
-                callback.onNewsLoaded(new ArrayList<ZhihuDailyItem>(mNewsCache.values()));
+                refreshCache(isLoadMore, list);
+                callback.onNewsLoaded(new ArrayList<>(mNewsCache.values()));
 
                 //save to database
+                saveAll(list);
             }
 
             @Override
             public void onDataNotAvailable() {
                 //网络请求出错，从本地数据库读取
-                mLocalDs.loadNews(date, new LoadZhihuDailyNewsCallback() {
+                mLocalDs.loadNews(date, isLoadMore, new LoadZhihuDailyNewsCallback() {
                     @Override
                     public void onNewsLoaded(@NonNull List<ZhihuDailyItem> list) {
-                        refreshCache(false, list);
-                        callback.onNewsLoaded(new ArrayList<ZhihuDailyItem>(mNewsCache.values()));
+                        refreshCache(isLoadMore, list);
+                        callback.onNewsLoaded(new ArrayList<>(mNewsCache.values()));
                     }
 
                     @Override
@@ -88,12 +94,24 @@ public class ZhihuDailyNewsRepository implements ZhihuDailyNewsDataSource{
 
     }
 
-    private void refreshCache(boolean clearCache, List<ZhihuDailyItem> items){
+    @Override
+    public void saveAll(List<ZhihuDailyItem> items) {
+        //set timestamp
+        for (ZhihuDailyItem item : items){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(TimeZone.getTimeZone("GMT+08"));
+            item.setTimestamp(calendar.getTimeInMillis());
+        }
+        mLocalDs.saveAll(items);
+    }
+
+    private void refreshCache(boolean isLoadMore, List<ZhihuDailyItem> items){
         if (mNewsCache == null){
-            mNewsCache = new HashMap<>();
+            mNewsCache = new LinkedHashMap<>();
         }
 
-        if (clearCache){
+        if (!isLoadMore){
+            //非加载更多，清空缓存
             mNewsCache.clear();
         }
 

@@ -1,6 +1,5 @@
 package com.example.windy.wind.timeline.zhihuDaily;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,7 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telecom.Call;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,15 +18,11 @@ import com.example.windy.wind.ZhihuContentActivity;
 import com.example.windy.wind.adapter.SlideUpwardScrollListener;
 import com.example.windy.wind.adapter.UniversalItemAdpter;
 import com.example.windy.wind.data.beans.ZhihuDailyItem;
-import com.example.windy.wind.data.beans.ZhihuDailyNews;
 import com.example.windy.wind.decoration.ItemDividerDecoration;
-import com.example.windy.wind.network.RequestDataRx;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
-
-import rx.Subscriber;
 
 /**
  * Created by windy on 2017/9/29.
@@ -40,7 +35,6 @@ public class ZhihuDailyFragment extends Fragment
     private SwipeRefreshLayout mRefreshLayout;
 
     private UniversalItemAdpter mUniversalItemAdpter;
-    private RequestDataRx mRequestDataRx;
 
     private boolean isFristLoad = true;
 
@@ -82,7 +76,7 @@ public class ZhihuDailyFragment extends Fragment
         Calendar c = Calendar.getInstance();
         c.setTimeZone(TimeZone.getTimeZone("GMT+08"));
         c.set(mYear, mMonth, mDay);
-        
+
         if (isFristLoad){
             isFristLoad = false;
             mPresenter.loadPosts(c.getTimeInMillis(), false);
@@ -150,9 +144,10 @@ public class ZhihuDailyFragment extends Fragment
         mRecyclerView.addOnScrollListener(new SlideUpwardScrollListener() {
             @Override
             public void onLordMore() {
+                //can run to here Log.v("MTAG", "Load More Succ");
                 Calendar c = Calendar.getInstance();
                 c.set(mYear, mMonth, --mDay);
-                mPresenter.loadPosts(c.getTimeInMillis(), false);
+                mPresenter.loadPosts(c.getTimeInMillis(), true);
               }
         });
 

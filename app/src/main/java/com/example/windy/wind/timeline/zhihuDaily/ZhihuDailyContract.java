@@ -24,6 +24,6 @@ public class ZhihuDailyContract {
 
     interface Presenter extends BasePresenter{
         // 请求数据
-        void loadPosts(long date, boolean clearing);
+        void loadPosts(long date, boolean isLoadMore);
     }
 }
