@@ -53,7 +53,9 @@ public class CacheManager implements ClearCacheInterface{
 
                             //删除详细内容缓存
                             ZhihuDailyContent content = mDb.zhihuDailyContentDao().query(item.getId());
-                            mDb.zhihuDailyContentDao().delete(content);
+                            if (content != null) {
+                                mDb.zhihuDailyContentDao().delete(content);
+                            }
                         }
                         hasCleared = true;
                     }

@@ -16,6 +16,7 @@ import com.example.windy.wind.data.beans.MrywContent;
 import com.example.windy.wind.data.beans.MrywData;
 import com.example.windy.wind.data.beans.MrywDate;
 import com.example.windy.wind.customtabs.CustomTabsHelper;
+import com.example.windy.wind.data.preferences.PreferencesHelper;
 import com.example.windy.wind.network.NoOkRequest;
 import com.example.windy.wind.value.Api;
 
@@ -102,6 +103,10 @@ public class MeiRiYiWenFragment extends Fragment {
              String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/mryw.css\" type=\"text/css\">";
              String theme = "<body className=\"\" onload=\"\">";
              String divide = "<hr align=center width=100% color=#7D7D7D size=1>";
+
+             if (PreferencesHelper.getInstance(getContext()).getBoolean(PreferencesHelper.NIGHT_MODE)){
+                 theme = "<body className=\"\" onload=\"\" class=\"night\">";
+             }
 
              String result = "<!DOCTYPE html>\n"
                      + "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">\n"

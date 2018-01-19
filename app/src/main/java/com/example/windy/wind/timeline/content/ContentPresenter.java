@@ -17,6 +17,8 @@ public class ContentPresenter implements ContentContract.Presenter {
     @NonNull
     private ZhihuDailyContentRepository mRepository;
 
+    private String shareUrl;
+
     public ContentPresenter(@NonNull ContentContract.View mView, @NonNull ZhihuDailyContentRepository mRepository) {
         this.mView = mView;
         mView.setPresenter(this);
@@ -28,6 +30,7 @@ public class ContentPresenter implements ContentContract.Presenter {
         mRepository.loadContent(itemId, new ZhihuDailyContentDataSource.LoadZhihuDailyContentCallback() {
             @Override
             public void onContentLoaded(@NonNull ZhihuDailyContent content) {
+                shareUrl = content.getShare_url();
                 mView.showContent(content);
             }
 
@@ -45,11 +48,6 @@ public class ContentPresenter implements ContentContract.Presenter {
 
     @Override
     public void share() {
-
-    }
-
-    @Override
-    public void back() {
-
+        mView.showShare(shareUrl);
     }
 }

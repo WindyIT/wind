@@ -1,6 +1,7 @@
 package com.example.windy.wind.timeline.zhihuDaily;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.windy.wind.data.beans.ZhihuDailyItem;
 import com.example.windy.wind.data.datasource.ZhihuDailyNewsDataSource;

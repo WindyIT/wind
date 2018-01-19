@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,11 @@ import com.example.windy.wind.R;
 import com.example.windy.wind.adapter.SlideUpwardScrollListener;
 import com.example.windy.wind.adapter.UniversalItemAdpter;
 import com.example.windy.wind.data.beans.ZhihuDailyItem;
+import com.example.windy.wind.data.local.ZhihuDailyNewsLocalDs;
+import com.example.windy.wind.data.remote.ZhihuDailyNewsRemoteDs;
+import com.example.windy.wind.data.repository.ZhihuDailyNewsRepository;
 import com.example.windy.wind.decoration.ItemDividerDecoration;
-import com.example.windy.wind.timeline.content.ZhihuContentActivity;
+import com.example.windy.wind.timeline.content.ContentActivity;
 
 import java.util.Calendar;
 import java.util.List;
@@ -59,6 +63,9 @@ public class ZhihuDailyFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
+
+        Log.v("ON_CREATE", "Create fragment view");
+
         //初始化控件
         initViews(view);
         //item响应事件
@@ -75,6 +82,12 @@ public class ZhihuDailyFragment extends Fragment
         Calendar c = Calendar.getInstance();
         c.setTimeZone(TimeZone.getTimeZone("GMT+08"));
         c.set(mYear, mMonth, mDay);
+
+        if (mPresenter == null){
+            new ZhihuDailyPresenter(this,
+                    ZhihuDailyNewsRepository.getInstance(ZhihuDailyNewsRemoteDs.getInstance(),
+                            ZhihuDailyNewsLocalDs.getInstance(getContext())));
+        }
 
         if (isFristLoad){
             isFristLoad = false;
@@ -134,7 +147,7 @@ public class ZhihuDailyFragment extends Fragment
         mUniversalItemAdpter.setmOnItemCilckListener(new UniversalItemAdpter.OnItemCilckListener() {
             @Override
             public void onClick(View view, int pos) {
-               ZhihuContentActivity.actionStart(getContext(), mUniversalItemAdpter.getItemList().get(pos).getId(), mUniversalItemAdpter.getItemList().get(pos).getTitle());
+               ContentActivity.actionStart(getContext(), mUniversalItemAdpter.getItemList().get(pos).getId(), mUniversalItemAdpter.getItemList().get(pos).getTitle());
             }
         });
     }

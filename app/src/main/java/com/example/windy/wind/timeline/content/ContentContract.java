@@ -15,13 +15,13 @@ public interface ContentContract {
         void showContent(ZhihuDailyContent content);
 
         void showError();
+
+        void showShare(String url);
     }
 
     interface Presenter extends BasePresenter{
         void loadContent(int itemId);
 
         void share();
-
-        void back();
     }
 }

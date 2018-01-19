@@ -2,9 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_more"
+        android:id="@+id/action_share"
         android:orderInCategory="1"
-        android:icon="@drawable/ic_more_vert_black"
+        android:icon="@drawable/ic_share_black"
         android:title=""
         app:showAsAction="always" />
 

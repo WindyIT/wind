@@ -1,15 +1,19 @@
 package com.example.windy.wind.timeline.content;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -20,57 +24,77 @@ import com.bumptech.glide.Glide;
 import com.example.windy.wind.R;
 import com.example.windy.wind.customtabs.CustomTabsHelper;
 import com.example.windy.wind.data.beans.ZhihuDailyContent;
-import com.example.windy.wind.data.local.ZhihuDailyContentLocalDs;
-import com.example.windy.wind.data.remote.ZhihuDailyContentRemoteDs;
-import com.example.windy.wind.data.repository.ZhihuDailyContentRepository;
+import com.example.windy.wind.data.preferences.PreferencesHelper;
 
 /**
- * Created by windy on 2017/11/11.
+ * Created by windy on 2018/1/18.
  */
 
-public class ZhihuContentActivity extends AppCompatActivity
+public class ZhihuContentFragment extends Fragment
                                     implements ContentContract.View{
+
     private ContentContract.Presenter mPresenter;
-
-    public static final String ZHIHU_NEWS_ID  = "ID";
-    public static final String ZHIHU_NEWS_TITLE = "TITLE";
-
-    private int itemId;
-    private String itemTitle;
 
     private WebView mWebView;
     private ImageView mImgView;
     private CollapsingToolbarLayout mToolbarLayout;
     private Toolbar mToolbar;
 
+    public static final String ZHIHU_NEWS_ID  = "ID";
+    public static final String ZHIHU_NEWS_TITLE = "TITLE";
+
+    private int mItemId;
+    private String mItemTitle;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_zhcontent);
+        Intent intent = getActivity().getIntent();
 
-        //get data from the intent
-        Intent intent = getIntent();
-        itemId = intent.getIntExtra(ZHIHU_NEWS_ID, 0);
-        itemTitle = intent.getStringExtra(ZHIHU_NEWS_TITLE);
+        setHasOptionsMenu(true);
 
-        initViews(null);
+        mItemId = intent.getIntExtra(ZHIHU_NEWS_ID, 0);
+        mItemTitle = intent.getStringExtra(ZHIHU_NEWS_TITLE);
+    }
 
-        new ContentPresenter(this,
-                                ZhihuDailyContentRepository.getInstance(ZhihuDailyContentRemoteDs.getInstance(), ZhihuDailyContentLocalDs.getInstance(this)));
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_zhcontent, container, false);
+
+        initViews(view);
+
+        return view;
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        if (mPresenter != null)
-            mPresenter.loadContent(itemId);
+        if (mPresenter != null){
+            mPresenter.loadContent(mItemId);
+        }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
-        return super.onCreateOptionsMenu(menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.content_menu_more, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id){
+            case android.R.id.home : {
+                getActivity().onBackPressed();
+            }break;
+            case R.id.action_share :{
+                mPresenter.share();
+            }break;
+            default : break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -81,10 +105,10 @@ public class ZhihuContentActivity extends AppCompatActivity
 
     @Override
     public void initViews(View view) {
-        mWebView = (WebView) findViewById(R.id.web_view);
-        mImgView = (ImageView)findViewById(R.id.img_view_content);
-        mToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapse_layout);
-        mToolbar = (Toolbar)findViewById(R.id.toolbar_content);
+        mWebView = (WebView)view.findViewById(R.id.web_view);
+        mImgView = (ImageView)view.findViewById(R.id.img_view_content);
+        mToolbarLayout = (CollapsingToolbarLayout)view.findViewById(R.id.collapse_layout);
+        mToolbar = (Toolbar)view.findViewById(R.id.toolbar_content);
 
         mWebView.setScrollbarFadingEnabled(true);
         mWebView.getSettings().setJavaScriptEnabled(true);
@@ -97,25 +121,21 @@ public class ZhihuContentActivity extends AppCompatActivity
         mWebView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                CustomTabsHelper.openUrl(getApplicationContext(), url);
+                CustomTabsHelper.openUrl(getContext(), url);
                 return true;
             }
         });
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
+        ContentActivity activity = (ContentActivity)getActivity();
+        activity.setSupportActionBar(mToolbar);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        activity.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
-        mToolbarLayout.setTitle(itemTitle);
+        mToolbarLayout.setTitle(mItemTitle);
         mToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
         mToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
         mToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBarPlus1);
         mToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBarPlus1);
-    }
-
-    @Override
-    public void showError() {
-        Toast.makeText(this, "数据加载出错", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -130,6 +150,11 @@ public class ZhihuContentActivity extends AppCompatActivity
             String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/zhihu_daily.css\" type=\"text/css\">";
 
             String theme = "<body className=\"\" onload=\"onLoaded()\">";
+
+            if (PreferencesHelper.getInstance(getContext()).getBoolean(PreferencesHelper.NIGHT_MODE)){
+                Log.v("NIGHT", "set night class");
+                theme = "<body className=\"\" onload=\"onLoaded()\" class=\"night\">";
+            }
 
             result = "<!DOCTYPE html>\n"
                     + "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">\n"
@@ -151,6 +176,23 @@ public class ZhihuContentActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void showError() {
+
+    }
+
+    @Override
+    public void showShare(String link) {
+        try {
+            Intent shareIntent = new Intent().setAction(Intent.ACTION_SEND).setType("text/plain");
+            String shareText = "" + mItemTitle + " " + link;
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+            startActivity(Intent.createChooser(shareIntent, "分享至"));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getContext(), "分享出错", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void setCover(String url){
         if (url != null){
             Glide.with(this)
@@ -163,12 +205,5 @@ public class ZhihuContentActivity extends AppCompatActivity
         }else {
             mImgView.setImageResource(R.drawable.ic_nav_header);
         }
-    }
-
-    public static void actionStart(Context context, int id, String title){
-        Intent intent = new Intent(context, ZhihuContentActivity.class);
-        intent.putExtra(ZHIHU_NEWS_ID, id);
-        intent.putExtra(ZHIHU_NEWS_TITLE, title);
-        context.startActivity(intent);
     }
 }

@@ -9,26 +9,26 @@
             android:id="@+id/nav_night_mode"
             android:icon="@drawable/ic_menu_gallery"
             android:title="夜间模式" />
-        <item
-            android:id="@+id/nav_nopic_mode"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="无图模式" />
+        <!--<item-->
+            <!--android:id="@+id/nav_nopic_mode"-->
+            <!--android:icon="@drawable/ic_menu_slideshow"-->
+            <!--android:title="无图模式" />-->
         <item
             android:id="@+id/nav_clear_cache"
             android:icon="@drawable/ic_menu_manage"
             android:title="清除缓存" />
     </group>
 
-    <item android:title="足迹">
-        <menu>
-            <item
-                android:id="@+id/nav_collect"
-                android:icon="@drawable/ic_menu_share"
-                android:title="收藏文章" />
-            <item
-                android:id="@+id/nav_history"
-                android:icon="@drawable/ic_menu_send"
-                android:title="阅读历史" />
-        </menu>
-    </item>
+    <!--<item android:title="足迹">-->
+        <!--<menu>-->
+            <!--<item-->
+                <!--android:id="@+id/nav_collect"-->
+                <!--android:icon="@drawable/ic_menu_share"-->
+                <!--android:title="收藏文章" />-->
+            <!--<item-->
+                <!--android:id="@+id/nav_history"-->
+                <!--android:icon="@drawable/ic_menu_send"-->
+                <!--android:title="阅读历史" />-->
+        <!--</menu>-->
+    <!--</item>-->
 </menu>

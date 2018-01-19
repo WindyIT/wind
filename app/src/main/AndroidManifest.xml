@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".timeline.content.ZhihuContentActivity">
+        <activity android:name=".timeline.content.ContentActivity">
         </activity>
     </application>
 
