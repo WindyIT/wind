@@ -1,6 +1,7 @@
 package com.example.windy.wind.data.repository;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.windy.wind.data.beans.ZhihuDailyItem;
 import com.example.windy.wind.data.datasource.ZhihuDailyNewsDataSource;
@@ -62,6 +63,7 @@ public class ZhihuDailyNewsRepository implements ZhihuDailyNewsDataSource{
             public void onNewsLoaded(@NonNull List<ZhihuDailyItem> list) {
                 //save into the cache
                 refreshCache(isLoadMore, list);
+                Log.v("LOAD_TAG", "Load More Succ...");
                 callback.onNewsLoaded(new ArrayList<>(mNewsCache.values()));
 
                 //save to database

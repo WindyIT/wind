@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity
 
 
         if (id == R.id.nav_user) {
-            // Handle the camera action
+
         } else if (id == R.id.nav_night_mode) {
             boolean isNightMode = PreferencesHelper.getInstance(this).getBoolean(PreferencesHelper.NIGHT_MODE);
             boolean newMode = !isNightMode;

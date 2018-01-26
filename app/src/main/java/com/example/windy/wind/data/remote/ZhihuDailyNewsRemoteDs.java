@@ -3,7 +3,6 @@ package com.example.windy.wind.data.remote;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.windy.wind.data.beans.ZhihuDailyContent;
 import com.example.windy.wind.data.beans.ZhihuDailyItem;
 import com.example.windy.wind.data.beans.ZhihuDailyNews;
 import com.example.windy.wind.data.datasource.ZhihuDailyNewsDataSource;

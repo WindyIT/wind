@@ -159,6 +159,8 @@ public class ZhihuDailyFragment extends Fragment
                 //can run to here Log.v("MTAG", "Load More Succ");
                 Calendar c = Calendar.getInstance();
                 c.set(mYear, mMonth, --mDay);
+                Log.v("LOAD_TAG", "Load More Action... " + mYear + mMonth + mDay);
+
                 mPresenter.loadPosts(c.getTimeInMillis(), true);
               }
         });
